@@ -16,7 +16,7 @@ No install step. You need:
 
 Run the script directly against the sample files in `demo/`:
 ```bash
-python3 scripts/scroll_walkthrough.py scripts/ken_burns.py scripts/beat_montage.py scripts/audiogram.py scripts/film_look.py{scroll-video-walkthrough} --help
+python3 scripts/scroll_walkthrough.py --help
 ```
 
 ## Making a change
