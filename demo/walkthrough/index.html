@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>One Drone Shot, Four Realities</title>
+<style>
+  :root { --accent: #59d1ff; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: auto; }
+  body {
+    background: #0b0d10; color: #f2f4f6;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .intro, .outro {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 8vh 6vw; gap: 1.2rem;
+  }
+  .intro h1 {
+    font-size: clamp(2.2rem, 7vw, 5rem); font-weight: 800;
+    letter-spacing: -0.02em; line-height: 1.05; max-width: 16ch;
+  }
+  .intro p, .outro p { color: #9aa3ad; font-size: clamp(1rem, 2.2vw, 1.25rem);
+    max-width: 44ch; line-height: 1.6; }
+  .scroll-hint { margin-top: 4vh; color: #9aa3ad; font-size: .85rem;
+    letter-spacing: .25em; text-transform: uppercase; }
+  .scroll-hint::after {
+    content: ""; display: block; width: 1px; height: 56px;
+    margin: 14px auto 0; background: linear-gradient(var(--accent), transparent);
+    animation: drip 1.6s ease-in-out infinite;
+  }
+  @keyframes drip { 0% {transform: scaleY(0); transform-origin: top}
+    45% {transform: scaleY(1); transform-origin: top}
+    55% {transform: scaleY(1); transform-origin: bottom}
+    100% {transform: scaleY(0); transform-origin: bottom} }
+
+  .scene { position: relative; height: 200vh; }
+  .scene .stick {
+    position: sticky; top: 0; height: 100vh; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    background: #000;
+  }
+  .scene video {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .scene .overlay {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 6vh 6vw;
+    background: linear-gradient(transparent, rgba(5,7,9,.72));
+    opacity: 0; transform: translateY(12px);
+    transition: opacity .45s ease, transform .45s ease;
+    pointer-events: none;
+  }
+  .scene .overlay.on { opacity: 1; transform: none; }
+  .overlay .num {
+    color: var(--accent); font-weight: 700; font-size: .85rem;
+    letter-spacing: .3em;
+  }
+  .overlay h2 {
+    font-size: clamp(1.6rem, 4.5vw, 3rem); font-weight: 800;
+    letter-spacing: -0.01em; margin-top: .35rem;
+  }
+
+  .bar { position: fixed; top: 0; left: 0; height: 3px; width: 0;
+    background: var(--accent); z-index: 10; }
+  .dots { position: fixed; right: 18px; top: 50%;
+    transform: translateY(-50%); display: flex; flex-direction: column;
+    gap: 10px; z-index: 10; }
+  .dots span { width: 8px; height: 8px; border-radius: 50%;
+    background: #3a4149; transition: background .3s, transform .3s; }
+  .dots span.on { background: var(--accent); transform: scale(1.35); }
+
+  .outro .credit { color: #5c656e; font-size: .85rem; margin-top: 2rem; }
+  .outro .credit a { color: #9aa3ad; }
+  @media (max-width: 640px) { .dots { right: 10px; } }
+</style>
+</head>
+<body>
+
+<div class="bar" id="bar"></div>
+<div class="dots" id="dots" aria-hidden="true"></div>
+
+<header class="intro">
+  <h1>One Drone Shot, Four Realities</h1>
+  <p>Scroll to move through the transformation: real footage, point cloud, greybox, neon city.</p>
+  <div class="scroll-hint">Scroll</div>
+</header>
+
+<section class="scene">
+  <div class="stick">
+    <video src="videos/01.mp4" poster="posters/01.jpg"
+           muted playsinline preload="auto" tabindex="-1"></video>
+    <div class="overlay">
+      <span class="num">01 / 04</span>
+      <h2>The Real City</h2>
+    </div>
+  </div>
+</section>
+
+<section class="scene">
+  <div class="stick">
+    <video src="videos/02.mp4" poster="posters/02.jpg"
+           muted playsinline preload="auto" tabindex="-1"></video>
+    <div class="overlay">
+      <span class="num">02 / 04</span>
+      <h2>Point Cloud</h2>
+    </div>
+  </div>
+</section>
+
+<section class="scene">
+  <div class="stick">
+    <video src="videos/03.mp4" poster="posters/03.jpg"
+           muted playsinline preload="auto" tabindex="-1"></video>
+    <div class="overlay">
+      <span class="num">03 / 04</span>
+      <h2>Greybox Massing</h2>
+    </div>
+  </div>
+</section>
+
+<section class="scene">
+  <div class="stick">
+    <video src="videos/04.mp4" poster="posters/04.jpg"
+           muted playsinline preload="auto" tabindex="-1"></video>
+    <div class="overlay">
+      <span class="num">04 / 04</span>
+      <h2>Neon City</h2>
+    </div>
+  </div>
+</section>
+
+
+<footer class="outro">
+  <p>The whole page is one folder of clips and one command.</p>
+  <p class="credit">Made with the Scroll-Video Walkthrough skill.</p>
+</footer>
+
+<script>
+(function () {
+  var scenes = Array.prototype.slice.call(document.querySelectorAll(".scene"));
+  var bar = document.getElementById("bar");
+  var dotsBox = document.getElementById("dots");
+  var state = scenes.map(function (sec, i) {
+    var dot = document.createElement("span");
+    dotsBox.appendChild(dot);
+    var v = sec.querySelector("video");
+    v.muted = true;             // belt & suspenders for mobile inline scrub
+    return { sec: sec, video: v, overlay: sec.querySelector(".overlay"),
+             dot: dot, target: 0, current: 0, dur: 0 };
+  });
+
+  state.forEach(function (s) {
+    if (s.video.readyState >= 1) s.dur = s.video.duration || 0;
+    s.video.addEventListener("loadedmetadata", function () {
+      s.dur = s.video.duration || 0;
+    });
+  });
+
+  // nudge iOS Safari to allow programmatic seeking on inline muted video
+  var kicked = false;
+  function kick() {
+    if (kicked) return; kicked = true;
+    state.forEach(function (s) {
+      var p = s.video.play();
+      if (p && p.then) p.then(function () { s.video.pause(); })
+                        .catch(function () {});
+      else s.video.pause();
+    });
+  }
+  window.addEventListener("touchstart", kick, { once: true, passive: true });
+  window.addEventListener("scroll", kick, { once: true, passive: true });
+
+  function onScroll() {
+    var vh = window.innerHeight;
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - vh;
+    bar.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + "%";
+
+    state.forEach(function (s) {
+      var r = s.sec.getBoundingClientRect();
+      var span = r.height - vh;
+      var p = span > 0 ? -r.top / span : 0;
+      p = Math.max(0, Math.min(1, p));
+      s.target = p;
+      var active = r.top < vh && r.bottom > 0;
+      s.overlay.classList.toggle("on", active && p > 0.02 && p < 0.92);
+      s.dot.classList.toggle("on", r.top <= vh * 0.5 && r.bottom > vh * 0.5);
+    });
+  }
+
+  // Framerate-independent easing (half-life 80 ms), driven by BOTH rAF and
+  // an interval timer — rAF alone stalls when the tab is throttled.
+  var last = performance.now();
+  function step() {
+    var now = performance.now();
+    var dt = Math.min(0.15, (now - last) / 1000);
+    last = now;
+    if (dt <= 0) return;
+    var k = 1 - Math.pow(2, -dt / 0.08);
+    state.forEach(function (s) {
+      if (!s.dur || s.video.readyState < 2) return;
+      var want = s.target * Math.max(0, s.dur - 0.05);
+      s.current += (want - s.current) * k;
+      if (Math.abs(s.video.currentTime - s.current) > 0.02) {
+        try { s.video.currentTime = s.current; } catch (e) {}
+      }
+    });
+  }
+  function raf() { step(); requestAnimationFrame(raf); }
+  function onScrollStep() { onScroll(); step(); }
+
+  window.addEventListener("scroll", onScrollStep, { passive: true });
+  window.addEventListener("resize", onScroll);
+  onScroll();
+  requestAnimationFrame(raf);
+  setInterval(step, 66);
+})();
+</script>
+</body>
+</html>
