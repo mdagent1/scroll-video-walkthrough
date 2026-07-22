@@ -3,7 +3,8 @@
 Scroll-Video Walkthrough — a folder of clips in, a scroll-driven web page out.
 
 Scrolling scrubs each clip: the video plays exactly as fast as the reader
-scrolls, scene by scene. Plain HTML/CSS/JS — no framework, no build step.
+scrolls, scene by scene, and arrow keys jump between scene starts for
+keyboard navigation. Plain HTML/CSS/JS — no framework, no build step.
 
   python3 scroll_walkthrough.py --clips ./clips --out ./walkthrough --title "My Tour"
 
@@ -299,6 +300,42 @@ __SCENES__
   }
   function raf() { step(); requestAnimationFrame(raf); }
   function onScrollStep() { onScroll(); step(); }
+
+  function sceneTop(i) {
+    return state[i].sec.offsetTop;
+  }
+
+  function activeSceneIndex() {
+    var y = window.scrollY;
+    var i;
+    for (i = state.length - 1; i >= 0; i--) {
+      if (y >= sceneTop(i) - 1) return i;
+    }
+    return -1;
+  }
+
+  function jumpScene(delta) {
+    if (!state.length) return;
+    var current = activeSceneIndex();
+    if (current < 0 && delta < 0) return;
+    var next = Math.max(0, Math.min(state.length - 1, current + delta));
+    if (next === current) return;
+    window.scrollTo({ top: sceneTop(next), behavior: "auto" });
+    onScrollStep();
+  }
+
+  window.addEventListener("keydown", function (e) {
+    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+    var target = e.target;
+    if (target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return;
+    if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+      e.preventDefault();
+      jumpScene(1);
+    } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      jumpScene(-1);
+    }
+  });
 
   window.addEventListener("scroll", onScrollStep, { passive: true });
   window.addEventListener("resize", onScroll);

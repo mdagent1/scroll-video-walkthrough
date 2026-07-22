@@ -13,7 +13,8 @@ description: >-
 
 A folder of clips becomes a web page where **scrolling drives the video**:
 each clip is a full-screen scene, and the reader's scroll position scrubs
-through it. Stop scrolling, the video stops. Scroll back, it plays backward.
+through it. Stop scrolling, the video stops. Arrow keys jump between scene
+starts for keyboard navigation. Scroll back, it plays backward.
 
 ## When to use
 The user has **short clips** (a tour, a build, a transformation, a portfolio)
@@ -60,6 +61,8 @@ Number the files to control order.
 - **Eased scrub.** The video eases toward the scroll position
   (framerate-independent, 80 ms half-life) instead of snapping — wheel steps
   feel like motion, not slideshow clicks.
+- **Keyboard scene jumps.** Up/down or left/right arrows move to the next or
+  previous scene start without replacing the scroll-driven scrub.
 - **Triple-driven loop.** The scrub updates from rAF, a timer, *and* scroll
   events, so it keeps working where browsers throttle one of them.
 - **One scene = one clip.** Titles overlay on a bottom gradient, fade with
