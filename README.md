@@ -2,7 +2,8 @@
 
 Turn a **folder of clips** into a **scroll-driven web page**: each clip is a
 full-screen scene, and scrolling scrubs the video. Stop scrolling, it stops.
-Scroll back, it plays backward. The video *is* the website.
+Arrow keys jump between scene starts for keyboard navigation. Scroll back,
+it plays backward. The video *is* the website.
 
 Plain HTML/CSS/JS out — no framework, no build step. No npm. No pip installs.
 
@@ -22,6 +23,8 @@ Scene titles come from the filenames — `02-point-cloud.mp4` becomes
   seeking is chunky and the illusion dies.
 - **Eased scrub** — the video chases the scroll with an 80 ms half-life, so
   wheel steps read as motion, not slideshow clicks.
+- **Keyboard scene jumps** — up/down or left/right arrows move to the next or
+  previous scene start without replacing scroll-driven scrubbing.
 - **Throttle-proof loop** — scrub updates from rAF, a timer, and scroll
   events, so it survives browser throttling.
 
